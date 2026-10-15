@@ -1,0 +1,25 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: zero-trust-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: telemetry-collector-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/v1/telemetry/**
+        - id: soar-orchestrator-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/v1/soar/**
+        - id: compliance-db2-archiver
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/v1/compliance-vault/**
+        - id: deception-honeypot-service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/v1/honeypot/**

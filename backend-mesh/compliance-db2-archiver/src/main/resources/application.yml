@@ -1,0 +1,39 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: compliance-db2-archiver
+  datasource:
+    url: jdbc:db2://localhost:50000/SEC_COMP
+    username: db2inst1
+    password: db2admin_password
+    driver-class-name: com.ibm.db2.jcc.DB2Driver
+  jpa:
+    database-platform: org.hibernate.dialect.DB2Dialect
+    hibernate:
+      ddl-auto: update
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: db2-compliance-vault-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "io.sentinelmesh.core.events"
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:h2:mem:SEC_COMP;MODE=DB2;DB_CLOSE_DELAY=-1
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
